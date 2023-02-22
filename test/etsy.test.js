@@ -91,7 +91,7 @@ it("Search for an item in the search bar field", async() => {
 //Asserting that right page is opened after searching for an item
 it("Verifies that right seach page is opened", async() => {
     const searchResultUrl = await pageBase.getCurrentUrl();
-    expect(await searchResultUrl).to.eql("https://www.etsy.com/search?q=pen");
+    expect(await searchResultUrl).to.eql("https://www.etsy.com/search?q=pen&ref=search_bar");
 })
 
 //Clicking on filtering button
@@ -115,6 +115,7 @@ it("Filtering options - FREE shipping, Serbia", async() => {
 
 //Clicking on the specific pen that is showed by filtering
 it("Clicks on specific pen on the page", async() => {
+    await driver.sleep(1200);
     await pageSearhcResult.waitForSpecificPen();
     await pageSearhcResult.clicksOnSpecificPen();
 })
@@ -141,7 +142,7 @@ it("Choosing tip of a pen and adding to cart", async() => {
 
     }))
     
-    await driver.sleep(700);
+    await driver.sleep(1000);
 
     await pageItemCustomization.waitForAddToCartButton();
     await pageItemCustomization.clicksOnAddToCartButton();
