@@ -47,8 +47,8 @@ after(async () => {
 
 //Opening registration page and asserting that url is correct.
 it("Verifies that registration page is opened", async () => {
-    await pageBase.goToPage("https://www.etsy.com/join");
-    const registerUrl = await pageBase.getCurrentUrl();
+    await pageRegister.goToPage("https://www.etsy.com/join");
+    const registerUrl = await pageRegister.getCurrentUrl();
     expect(await registerUrl).to.eql("https://www.etsy.com/join");
 })
 
@@ -71,7 +71,7 @@ it("Fillout register form", async () => {
     const welcomeTitle = await pageHome.getWelcomeHeader();
     expect(await welcomeTitle.getText()).to.contain("Welcome to Etsy,");
 
-    const homepageUrl = await pageBase.getCurrentUrl();
+    const homepageUrl = await pageHome.getCurrentUrl();
     expect(await homepageUrl).to.eql("https://www.etsy.com/");
 
     await pageBase.refreshPage();
@@ -81,13 +81,14 @@ it("Fillout register form", async () => {
 //Searching for a pen item in the search bar and clicking enter button on keyboard
 it("Search for an item in the search bar field", async() => {
     await pageHome.waitForSerchBarField();
+    
     const searchField = await pageHome.getSearchBarField();
     await searchField.sendKeys("pen", Key.ENTER);
 })
 
 //Asserting that right page is opened after searching for an item
 it("Verifies that right seach page is opened", async() => {
-    const searchResultUrl = await pageBase.getCurrentUrl();
+    const searchResultUrl = await pageSearhcResult.getCurrentUrl();
     expect(await searchResultUrl).to.eql("https://www.etsy.com/search?q=pen&ref=search_bar");
 })
 
@@ -108,6 +109,9 @@ it("Filtering options - FREE shipping, Serbia", async() => {
     
     await pageFilters.waitForApplyButton();
     await pageFilters.clicksOnApplyButton();
+
+    const FilterUrlResult = await pageFilters.getCurrentUrl();
+    expect(await FilterUrlResult).to.eql('https://www.etsy.com/search?q=pen&explicit=1&free_shipping=true&locationQuery=6290252&ship_to=RS');
 })
 
 //Clicking on the specific pen that is showed by filtering
@@ -115,12 +119,17 @@ it("Clicks on specific pen on the page", async() => {
     await driver.sleep(1200);
     await pageSearhcResult.waitForSpecificPen();
     await pageSearhcResult.clicksOnSpecificPen();
+
+    (await driver.getAllWindowHandles()).forEach(tab => driver.switchTo().window(tab));
+
+    const penTitleDiv = await pageItemCustomization.getPenTitleDiv();
+    expect(await penTitleDiv.getText()).to.contain('NOS Vintage Rotring Variant');
+    
 })
 
 //TC 002.001 FILTERING AND ADDING TO CART
 //Switching to new Tab, Going throught every single option with map function in the tip select, choosing 0.6 mm and addinng to Cart
 it("Choosing tip of a pen and adding to cart", async() => {
-    (await driver.getAllWindowHandles()).forEach(tab => driver.switchTo().window(tab));
     
     const tip = '1.2 mm';
      
@@ -143,6 +152,11 @@ it("Choosing tip of a pen and adding to cart", async() => {
 
     await pageItemCustomization.waitForAddToCartButton();
     await pageItemCustomization.clicksOnAddToCartButton();
+
+    await driver.sleep(1200);
+    const addToCartDiv = await pageItemCustomization.getAddToCartDiv();
+    const addToCartHeader = await pageItemCustomization.getAddToCartHeader(addToCartDiv);
+    expect(await addToCartHeader.getText()).to.contain('added to cart');
 })
 
 //Asserting that shopping cart is successfully opened
@@ -150,7 +164,7 @@ it("Verify that shopping cart page is opened", async() => {
     await pageItemCustomization.waitForViewCartButton();
     await pageItemCustomization.clickOnViewCartButton();
 
-    const cartUrl = await pageBase.getCurrentUrl();
+    const cartUrl = await pageCart.getCurrentUrl();
     expect(await cartUrl).to.contain("https://www.etsy.com/cart");
 })
 
