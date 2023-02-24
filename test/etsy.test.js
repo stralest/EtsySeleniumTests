@@ -66,10 +66,7 @@ it("Fillout register form", async () => {
 
     await pageRegister.waitForRegisterButton();
     await pageRegister.clickOnRegisterButton();
-})
 
-//Asserting that homepage is opened, welcome header is present and refresh page.
-it("Verifies that homepage is opened with welcome title", async() => {
     await pageHome.waitForWelcomeHeader();
     const welcomeTitle = await pageHome.getWelcomeHeader();
     expect(await welcomeTitle.getText()).to.contain("Welcome to Etsy,");
