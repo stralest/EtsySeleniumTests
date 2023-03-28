@@ -1,4 +1,4 @@
-require('selenium-webdriver/chrome');
+require('chromedriver');
 require('selenium-webdriver/edge');
 const {Builder, By, Key, until} = require("selenium-webdriver");
 const {expect, assert} = require("chai");
@@ -194,7 +194,7 @@ it("Customazing quantity of an item and proceeding to PayPal", async() => {
     const selectedItem = await quantitySelect.getAttribute("value");
     expect(await selectedItem).to.eql(quantity);
 
-    await driver.sleep(1000);
+    await driver.sleep(1300);
     await pageCart.waitForPayPalButton();
     await pageCart.clicksOnPayPalButton();
 
